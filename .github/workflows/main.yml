@@ -2,10 +2,10 @@ name: Auto-Train Voice AI
 
 on:
   schedule:
-    # Har Sunday raat 12 baje chalega (Server time ke hisaab se)
+    # Har Sunday raat 12 baje chalega
     - cron: '0 0 * * 0'
   workflow_dispatch: 
-    # Yeh aapko GitHub par ek "Run workflow" button dega taaki aap manually bhi test kar sakein
+    # Manual test ke liye 'Run workflow' button deta hai
 
 jobs:
   trigger-kaggle:
@@ -19,16 +19,14 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-      - run: pip install kaggle
+          
+      - name: Install Kaggle
+        run: pip install kaggle
 
-      - name: Step 3 - Trigger Kaggle GPU & Pass Secrets
+      - name: Step 3 - Trigger Kaggle GPU
         env:
-          KAGGLE_USERNAME: ${{ secrets."id": "ezqrio/santali-voice-ai-bot",
-          }}
+          KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
           KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
-          HF_TOKEN: ${{ secrets.Santali_llm }}
-          TELEGRAM_TOKEN: ${{ secrets.Santali_llm_Bot }}
-          TELEGRAM_CHAT_ID: ${{ secrets.8961969145 }}
         run: |
           # 1. Ek temporary folder banate hain
           mkdir -p my_kaggle_project
@@ -36,14 +34,9 @@ jobs:
           # 2. Repo ki training file ko is folder mein copy karte hain
           cp train.ipynb my_kaggle_project/
           
-          # 3. Secrets ko ek Python config file mein daalte hain taaki Kaggle ise padh sake
-          echo "HF_TOKEN = '$HF_TOKEN'" > my_kaggle_project/secrets_config.py
-          echo "TELEGRAM_TOKEN = '$TELEGRAM_TOKEN'" >> my_kaggle_project/secrets_config.py
-          echo "TELEGRAM_CHAT_ID = '$TELEGRAM_CHAT_ID'" >> my_kaggle_project/secrets_config.py
-          
-          # 4. Kaggle ko batate hain ki free GPU aur Internet on rakhna hai
+          # 3. Kaggle ko batate hain ki free GPU aur Internet on rakhna hai
           echo '{
-            "id": "'$KAGGLE_USERNAME'/santali-voice-ai-bot",
+            "id": "ezqrio/santali-voice-ai-bot",
             "title": "Santali Voice AI Auto Train",
             "code_file": "train.ipynb",
             "language": "python",
@@ -53,6 +46,6 @@ jobs:
             "enable_internet": "true"
           }' > my_kaggle_project/kernel-metadata.json
           
-          # 5. Kaggle ko command bhejte hain (The Trigger!)
+          # 4. Kaggle ko command bhejte hain
           kaggle kernels push -p my_kaggle_project
           
