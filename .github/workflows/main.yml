@@ -1,0 +1,57 @@
+name: Auto-Train Voice AI
+
+on:
+  schedule:
+    # Har Sunday raat 12 baje chalega (Server time ke hisaab se)
+    - cron: '0 0 * * 0'
+  workflow_dispatch: 
+    # Yeh aapko GitHub par ek "Run workflow" button dega taaki aap manually bhi test kar sakein
+
+jobs:
+  trigger-kaggle:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Step 1 - Code Checkout
+        uses: actions/checkout@v3
+
+      - name: Step 2 - Python & Kaggle Setup
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - run: pip install kaggle
+
+      - name: Step 3 - Trigger Kaggle GPU & Pass Secrets
+        env:
+          KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+          KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          # 1. Ek temporary folder banate hain
+          mkdir -p my_kaggle_project
+          
+          # 2. Repo ki training file ko is folder mein copy karte hain
+          cp train.ipynb my_kaggle_project/
+          
+          # 3. Secrets ko ek Python config file mein daalte hain taaki Kaggle ise padh sake
+          echo "HF_TOKEN = '$HF_TOKEN'" > my_kaggle_project/secrets_config.py
+          echo "TELEGRAM_TOKEN = '$TELEGRAM_TOKEN'" >> my_kaggle_project/secrets_config.py
+          echo "TELEGRAM_CHAT_ID = '$TELEGRAM_CHAT_ID'" >> my_kaggle_project/secrets_config.py
+          
+          # 4. Kaggle ko batate hain ki free GPU aur Internet on rakhna hai
+          echo '{
+            "id": "'$KAGGLE_USERNAME'/santali-voice-ai-bot",
+            "title": "Santali Voice AI Auto Train",
+            "code_file": "train.ipynb",
+            "language": "python",
+            "kernel_type": "notebook",
+            "is_private": "true",
+            "enable_gpu": "true",
+            "enable_internet": "true"
+          }' > my_kaggle_project/kernel-metadata.json
+          
+          # 5. Kaggle ko command bhejte hain (The Trigger!)
+          kaggle kernels push -p my_kaggle_project
+          
