@@ -23,11 +23,11 @@ jobs:
 
       - name: Step 3 - Trigger Kaggle GPU & Pass Secrets
         env:
-          KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+          KAGGLE_USERNAME: ${{ secrets.Sanali_llm }}
           KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
-          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          HF_TOKEN: ${{ secrets.Santali_llm }}
+          TELEGRAM_TOKEN: ${{ secrets.Santali_llm_Bot }}
+          TELEGRAM_CHAT_ID: ${{ secrets.8961969145 }}
         run: |
           # 1. Ek temporary folder banate hain
           mkdir -p my_kaggle_project
