@@ -1,0 +1,26 @@
+      - name: Step 3 - Trigger Kaggle GPU
+        env:
+          KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+          KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+        run: |
+          # 1. Ek temporary folder banate hain
+          mkdir -p my_kaggle_project
+          
+          # 2. Repo ki training file ko is folder mein copy karte hain
+          cp train.py my_kaggle_project/
+          
+          # 3. Kaggle ko batate hain ki free GPU aur Internet on rakhna hai
+          echo '{
+            "id": "ezqrio/santali-voice-ai-bot",
+            "title": "Santali Voice AI Auto Train",
+            "code_file": "train.py",
+            "language": "python",
+            "kernel_type": "script",
+            "is_private": "true",
+            "enable_gpu": "true",
+            "enable_internet": "true"
+          }' > my_kaggle_project/kernel-metadata.json
+          
+          # 4. Kaggle ko command bhejte hain
+          kaggle kernels push -p my_kaggle_project
+          
