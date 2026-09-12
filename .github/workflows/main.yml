@@ -23,7 +23,8 @@ jobs:
 
       - name: Step 3 - Trigger Kaggle GPU & Pass Secrets
         env:
-          KAGGLE_USERNAME: ${{ secrets.Sanali_llm }}
+          KAGGLE_USERNAME: ${{ secrets."id": "ezqrio/santali-voice-ai-bot",
+          }}
           KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
           HF_TOKEN: ${{ secrets.Santali_llm }}
           TELEGRAM_TOKEN: ${{ secrets.Santali_llm_Bot }}
