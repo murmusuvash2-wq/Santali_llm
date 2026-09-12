@@ -32,15 +32,15 @@ jobs:
           mkdir -p my_kaggle_project
           
           # 2. Repo ki training file ko is folder mein copy karte hain
-          cp train.ipynb my_kaggle_project/
+          cp train.py my_kaggle_project/
           
           # 3. Kaggle ko batate hain ki free GPU aur Internet on rakhna hai
           echo '{
             "id": "ezqrio/santali-voice-ai-bot",
             "title": "Santali Voice AI Auto Train",
-            "code_file": "train.ipynb",
+            "code_file": "train.py",
             "language": "python",
-            "kernel_type": "notebook",
+            "kernel_type": "script",
             "is_private": "true",
             "enable_gpu": "true",
             "enable_internet": "true"
@@ -49,3 +49,4 @@ jobs:
           # 4. Kaggle ko command bhejte hain
           kaggle kernels push -p my_kaggle_project
           
+
